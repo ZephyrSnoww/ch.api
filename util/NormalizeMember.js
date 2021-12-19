@@ -1,3 +1,6 @@
+const { NormalizeServer } = require("./NormalizeServer");
+const { NormalizeUser } = require("./NormalizeUser");
+
 /**
  * Convert a member object from a given client into a normalized object.
  * @param {Object} member - The member to normalize
@@ -5,5 +8,42 @@
  * @returns {Object}
  */
 exports.NormalizeMember = (member, client) => {
+    let normalizedMember = {
+        avatar: null,
+        client: client.client,
+        server: null,
+        id: 0,
+        nickname: null,
+        user: null,
+        originalMember: member
+    };
+
+    if (client.name === "Telegram") {
+        normalizedMember.avatar = null; // TODO
+        normalizedMember.id = member.id;
+        normalizedMember.nickname = member.username;
+        normalizedMember.server = null;
+
+        normalizedMember.user = NormalizeUser(member, client);
+    }
+
+    if (client.name === "Discord") {
+        normalizedMember.avatar = member.avatarURL();
+        normalizedMember.id = member.id;
+        normalizedMember.nickname = member.nickname;
+
+        normalizedMember.user = NormalizeUser(member.user, client);
+        normalizedMember.server = NormalizeServer(member.guild, client);
+    }
+
+    if (client.name === "Revolt") {
+        normalizedMember.avatar = member.generateAvatarURL();
+        normalizedMember.id = member._id;
+        normalizedMember.nickname = member.nickname;
+
+        normalizedMember.user = NormalizeUser(member.user, client);
+        normalizedMember.server = NormalizeServer(member.server, client);
+    }
+
     return normalizedMember;
 }
