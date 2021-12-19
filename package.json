@@ -1,6 +1,6 @@
 {
   "name": "ch.api.js",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A chat API meant to interface with as many chat services as possible",
   "main": "index.js",
   "keywords": [
@@ -17,5 +17,6 @@
   "dependencies": {
     "discord.js": "^13.3.1",
     "revolt.js": "^5.1.0-alpha.15"
-  }
+  },
+  "repository": "https://github.com/glacierheavner/ch.api"
 }
