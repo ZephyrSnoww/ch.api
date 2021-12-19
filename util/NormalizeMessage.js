@@ -13,20 +13,20 @@ const { NormalizeServer } = require("./NormalizeServer");
 exports.NormalizeMessage = (message, client) => {
     let normalizedMessage = {
         attachments: [],
-        author: {},
-        channel: {},
+        author: null,
+        channel: null,
         channelId: 0,
         client: client.client,
-        content: "",
+        content: null,
         createdAt: new Date(),
         deletable: false,
         editable: false,
         editedAt: null,
         embeds: [],
-        server: {},
+        server: null,
         serverId: 0,
         id: 0,
-        member: {},
+        member: null,
         originalMessage: message
     };
 
@@ -41,10 +41,13 @@ exports.NormalizeMessage = (message, client) => {
         normalizedMessage.serverId = message.chat.id;
         normalizedMessage.id = message.message_id;
 
-        normalizedMessage.author = NormalizeUser(message.from, client);
-        normalizedMessage.channel = NormalizeChannel(message.chat, client);
-        normalizedMessage.server = NormalizeServer(message.chat, client);
         normalizedMessage.member = NormalizeMember(message.from, client);
+        normalizedMessage.author = NormalizeUser(message.from, client);
+
+        client.client.getChat(message.chat.id).then(chat => {
+            normalizedMessage.channel = NormalizeChannel(chat, client);
+            normalizedMessage.server = NormalizeServer(chat, client);
+        });
     }
 
     if (client.name === "Discord") {
