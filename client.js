@@ -12,8 +12,9 @@ class Client extends EventEmitter {
      * @param {string[]} options.discordIntents - Intents for the Discord client to use
      */
     constructor({
-        "Discord intents": discordIntents = []
+        discordIntents = Object.values(Discord.Intents.FLAGS)
     }) {
+        super();
         this.clients = {};
         this.clients.discord = new Discord.Client({ intents: [discordIntents] });
         this.clients.revolt = new Revolt.Client();
@@ -26,19 +27,17 @@ class Client extends EventEmitter {
      * @param {string} [options.revoltToken = null] - The token to use to log into Revolt
      */
     login({
-        "Discord token": discordToken = null,
-        "Revolt token": revoltToken = null
+        discordToken = null,
+        revoltToken = null
     }) {
         this.tokens = {
             discordToken,
             revoltToken
         };
-
-        if (this.tokens.every(key => key == null)) {
+        
+        if (Object.values(this.tokens).every(token => token == null)) {
             throw new Error("At least one API token must be given");
         }
-
-        this.clients = {};
 
         // TODO: Teamspeak login?
         // TODO: Telegram login
