@@ -5,4 +5,5 @@ exports.Client = require("./Client");
 exports.NormalizeChannel = require("./util/NormalizeChannel");
 exports.NormalizeMember = require("./util/NormalizeMember");
 exports.NormalizeMessage = require("./util/NormalizeMessage");
+exports.NormalizeServer = require("./util/NormalizeServer");
 exports.discordIntents = Discord.Intents;
