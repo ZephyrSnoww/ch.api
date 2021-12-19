@@ -1,4 +1,4 @@
 const Discord = require("discord.js");
 
-exports.Client = require("./client");
+exports.Client = require("./Client");
 exports.discordIntents = Discord.Intents;

@@ -11,15 +11,29 @@ const Revolt = require("revolt.js");
 class Client extends EventEmitter {
     /**
      * @param {Object} options - Options for each client to instantiate
-     * @param {string[]} options.discordIntents - Intents for the Discord client to use
+     * @param {string[]} [options.discordIntents] - Intents for the Discord client to use
      */
     constructor({
         discordIntents = Object.values(Discord.Intents.FLAGS)
     }) {
         super();
+
         this.clients = {};
-        this.clients.discord = new Discord.Client({ intents: [discordIntents] });
-        this.clients.revolt = new Revolt.Client();
+
+        this.clients.telegram = {
+            name: "Telegram",
+            client: null
+        };
+
+        this.clients.discord = {
+            name: "Discord",
+            client: new Discord.Client({ intents: [discordIntents] })
+        };
+
+        this.clients.revolt = {
+            name: "Revolt",
+            client: new Revolt.Client()
+        };
     }
 
     /**
@@ -50,33 +64,33 @@ class Client extends EventEmitter {
 
         // Telegram login
         if (this.tokens.telegramToken != null) {
-            this.clients.telegram = new TelegramBot(this.tokens.telegramToken, {
+            this.clients.telegram.client = new TelegramBot(this.tokens.telegramToken, {
                 polling: true
             });
 
-            this.clients.telegram.on("message", (message) => this.handleMessage(message, "telegram"));
-            this.handleReady("telegram");
+            this.clients.telegram.client.on("message", (message) => this.handleMessage(message, this.clients.telegram));
+            this.handleReady(this.clients.telegram);
         }
 
         // Discord login
         if (this.tokens.discordToken != null) {
-            this.clients.discord.login(discordToken);
-            this.clients.discord.on("messageCreate", (message) => this.handleMessage(message, "discord"));
-            this.clients.discord.on("ready", () => this.handleReady("discord"));
+            this.clients.discord.client.login(discordToken);
+            this.clients.discord.client.on("messageCreate", (message) => this.handleMessage(message, this.clients.discord));
+            this.clients.discord.client.on("ready", () => this.handleReady(this.clients.discord));
         }
 
         // Revolt login
         if (this.tokens.revoltToken != null) {
-            this.clients.revolt.loginBot(revoltToken);
-            this.clients.revolt.on("message", (message) => this.handleMessage(message, "revolt"));
-            this.clients.revolt.on("ready", () => this.handleReady("revolt"));
+            this.clients.revolt.client.loginBot(revoltToken);
+            this.clients.revolt.client.on("message", (message) => this.handleMessage(message, this.clients.revolt));
+            this.clients.revolt.client.on("ready", () => this.handleReady(this.clients.revolt));
         }
     }
 
     /**
      * Called when a message is recieved from a client
      * @param {Object} message - The message recieved
-     * @param {string} client - The client sending the event 
+     * @param {Object} client - The client sending the event 
      */
     handleMessage(message, client) {
         this.emit("message", message, client);
@@ -84,7 +98,7 @@ class Client extends EventEmitter {
 
     /**
      * Called when a client is ready
-     * @param {string} client - The client sending the event
+     * @param {Object} client - The client sending the event
      */
     handleReady(client) {
         this.emit("ready", client);
