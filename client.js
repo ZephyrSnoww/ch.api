@@ -1,4 +1,6 @@
 const EventEmitter = require("events");
+
+const TelegramBot = require("node-telegram-bot-api");
 const Discord = require("discord.js");
 const Revolt = require("revolt.js");
 
@@ -23,14 +25,17 @@ class Client extends EventEmitter {
     /**
      * Logs in all clients given, making them ready for use.
      * @param {Object} options - All options to use to login each client
+     * @param {string} [options.telegramToken = null] - The token to use to log into Telegram
      * @param {string} [options.discordToken = null] - The token to use to log into Discord
      * @param {string} [options.revoltToken = null] - The token to use to log into Revolt
      */
     login({
+        telegramToken = null,
         discordToken = null,
         revoltToken = null
     }) {
         this.tokens = {
+            telegramToken,
             discordToken,
             revoltToken
         };
@@ -40,9 +45,18 @@ class Client extends EventEmitter {
         }
 
         // TODO: Teamspeak login?
-        // TODO: Telegram login
         // TODO: Skype login?
         // TODO: SMS login
+
+        // Telegram login
+        if (this.tokens.telegramToken != null) {
+            this.clients.telegram = new TelegramBot(this.tokens.telegramToken, {
+                polling: true
+            });
+
+            this.clients.telegram.on("message", (message) => this.handleMessage(message, "telegram"));
+            this.handleReady("telegram");
+        }
 
         // Discord login
         if (this.tokens.discordToken != null) {
