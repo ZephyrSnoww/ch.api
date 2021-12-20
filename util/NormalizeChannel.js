@@ -19,6 +19,7 @@ exports.NormalizeChannel = async (channel, client) => {
         nsfw: false,
 
         send: () => { return null; },
+        setTopic: () => { return null; },
 
         originalChannel: channel
     };
@@ -35,6 +36,7 @@ exports.NormalizeChannel = async (channel, client) => {
         normalizedChannel.server = await NormalizeServer(channel, client);
 
         normalizedChannel.send = (content) => client.client.sendMessage(channel.id, content);
+        normalizedChannel.setTopic = (topic) => client.client.setChatDescription(channel.id, topic);
     }
 
     if (client.name === "Discord") {
@@ -49,6 +51,7 @@ exports.NormalizeChannel = async (channel, client) => {
         normalizedChannel.server = await NormalizeServer(channel.guild, client);
 
         normalizedChannel.send = (content) => channel.send(content);
+        normalizedChannel.setTopic = (topic) => channel.setTopic(topic);
     }
 
     if (client.name === "Revolt") {
@@ -63,6 +66,7 @@ exports.NormalizeChannel = async (channel, client) => {
         normalizedChannel.server = await NormalizeServer(channel.server, client);
 
         normalizedChannel.send = (content) => channel.sendMessage(content);
+        normalizedChannel.setTopic = (topic) => channel.edit({ description: topic });
     }
 
     return normalizedChannel;
