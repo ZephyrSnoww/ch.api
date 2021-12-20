@@ -28,7 +28,8 @@ exports.NormalizeMessage = async (message, client) => {
         id: 0,
         member: null,
 
-        reply: null,
+        reply: () => { return null; },
+        delete: () => { return null; },
 
         originalMessage: message
     };
@@ -53,6 +54,7 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.server = await NormalizeServer(chat, client);
 
         normalizedMessage.reply = (content) => client.client.sendMessage(message.chat.id, content, { reply_to_message_id: message.message_id} );
+        normalizedMessage.delete = () => client.client.deleteMessage(message.chat.id, message.message_id);
     }
 
     if (client.name === "Discord") {
@@ -78,6 +80,7 @@ exports.NormalizeMessage = async (message, client) => {
         }
 
         normalizedMessage.reply = (content) => message.reply(content);
+        normalizedMessage.delete = () => message.delete();
     }
 
     if (client.name === "Revolt") {
@@ -97,6 +100,7 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.member = await NormalizeMember(message.member, client);
 
         normalizedMessage.reply = (content) => message.reply(content);
+        normalizedMessage.delete = () => message.delete();
     }
 
     return normalizedMessage;
