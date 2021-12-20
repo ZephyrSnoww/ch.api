@@ -22,18 +22,16 @@ const client = new Client({});
 // The "ready" event is called whenever a client is ready.
 // This means that it gets called once for Discord, once for Revolt, once for Telegram, etc.
 client.on("ready", (client) => {
-    console.log(`Logged into ${client.toUpperCase()}!`);
+    console.log(`Logged into ${client.name.toUpperCase()}!`);
 });
 
-client.on("message", (message, client) => {
-    console.log(`${client} message: ${message.author} said "${message.content}"`);
-    if (message.content === "ch.ping") {
-        message.reply("Pong!");
-    }
+client.on("message", async (message, client) => {
+    console.log(`${client.name} message: ${message.author.username} said "${message.content}"`);
 });
 
 // This logs into any clients that have a token supplied.
 client.login({
+    telegramToken: config.tokens.telegram,
     discordToken: config.tokens.discord,
     revoltToken: config.tokens.revolt
 });
