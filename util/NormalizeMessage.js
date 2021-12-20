@@ -27,6 +27,9 @@ exports.NormalizeMessage = async (message, client) => {
         serverId: 0,
         id: 0,
         member: null,
+
+        reply: null,
+
         originalMessage: message
     };
 
@@ -44,9 +47,12 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.member = await NormalizeMember(message.from, client);
         normalizedMessage.author = await NormalizeUser(message.from, client);
 
-        let chat = await client.client.getChat(message.chat.id)
+        let chat = await client.client.getChat(message.chat.id);
+
         normalizedMessage.channel = await NormalizeChannel(chat, client);
         normalizedMessage.server = await NormalizeServer(chat, client);
+
+        normalizedMessage.reply = (content) => client.client.sendMessage(message.chat.id, content, { reply_to_message_id: message.message_id} );
     }
 
     if (client.name === "Discord") {
@@ -64,8 +70,14 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.server = await NormalizeServer(message.guild, client);
         normalizedMessage.member = await NormalizeMember(message.member, client);
 
-        let user = await message.author.fetch()
-        normalizedMessage.author = await NormalizeUser(user, client);
+        try {
+            let user = await message.author.fetch();
+            normalizedMessage.author = await NormalizeUser(user, client);
+        } catch (e) {
+            normalizedMessage.author = null;
+        }
+
+        normalizedMessage.reply = (content) => message.reply(content);
     }
 
     if (client.name === "Revolt") {
@@ -83,6 +95,8 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.channel = await NormalizeChannel(message.channel, client);
         normalizedMessage.server = await NormalizeServer(message.channel.server, client);
         normalizedMessage.member = await NormalizeMember(message.member, client);
+
+        normalizedMessage.reply = (content) => message.reply(content);
     }
 
     return normalizedMessage;
