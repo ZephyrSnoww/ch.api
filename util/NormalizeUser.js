@@ -4,7 +4,7 @@
  * @param {Object} client - The client the user is from
  * @returns {Object}
  */
-exports.NormalizeUser = (user, client) => {
+ exports.NormalizeUser = async (user, client) => {
     let normalizedUser = {
         avatar: null,
         banner: null,

@@ -7,7 +7,7 @@ const { NormalizeUser } = require("./NormalizeUser");
  * @param {Object} client - The client the member is from
  * @returns {Object}
  */
-exports.NormalizeMember = (member, client) => {
+exports.NormalizeMember = async (member, client) => {
     let normalizedMember = {
         avatar: null,
         client: client.client,
@@ -24,7 +24,7 @@ exports.NormalizeMember = (member, client) => {
         normalizedMember.nickname = member.username;
         normalizedMember.server = null;
 
-        normalizedMember.user = NormalizeUser(member, client);
+        normalizedMember.user = await NormalizeUser(member, client);
     }
 
     if (client.name === "Discord") {
@@ -32,8 +32,10 @@ exports.NormalizeMember = (member, client) => {
         normalizedMember.id = member.id;
         normalizedMember.nickname = member.nickname;
 
-        normalizedMember.user = NormalizeUser(member.user, client);
-        normalizedMember.server = NormalizeServer(member.guild, client);
+        normalizedMember.server = await NormalizeServer(member.guild, client);
+
+        let user = await member.user.fetch()
+        normalizedMember.user = await NormalizeUser(user, client);
     }
 
     if (client.name === "Revolt") {
@@ -41,8 +43,8 @@ exports.NormalizeMember = (member, client) => {
         normalizedMember.id = member._id;
         normalizedMember.nickname = member.nickname;
 
-        normalizedMember.user = NormalizeUser(member.user, client);
-        normalizedMember.server = NormalizeServer(member.server, client);
+        normalizedMember.user = await NormalizeUser(member.user, client);
+        normalizedMember.server = await NormalizeServer(member.server, client);
     }
 
     return normalizedMember;

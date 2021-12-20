@@ -4,6 +4,6 @@
  * @param {Object} client - The client the attachment is from
  * @returns {Object}
  */
-exports.NormalizeAttachment = (attachment, client) => {
+ exports.NormalizeAttachment = async (attachment, client) => {
     return normalizedAttachment;
 }

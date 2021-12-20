@@ -1,4 +1,4 @@
-const { NormalizeAttachment } = require("./NormalizeAttachment");
+// const { NormalizeAttachment } = require("./NormalizeAttachment");
 const { NormalizeUser } = require("./NormalizeUser");
 const { NormalizeChannel } = require("./NormalizeChannel");
 const { NormalizeMember } = require("./NormalizeMember");
@@ -10,7 +10,7 @@ const { NormalizeServer } = require("./NormalizeServer");
  * @param {Object} client  - The client the message is from
  * @returns {Object}
  */
-exports.NormalizeMessage = (message, client) => {
+exports.NormalizeMessage = async (message, client) => {
     let normalizedMessage = {
         attachments: [],
         author: null,
@@ -41,13 +41,12 @@ exports.NormalizeMessage = (message, client) => {
         normalizedMessage.serverId = message.chat.id;
         normalizedMessage.id = message.message_id;
 
-        normalizedMessage.member = NormalizeMember(message.from, client);
-        normalizedMessage.author = NormalizeUser(message.from, client);
+        normalizedMessage.member = await NormalizeMember(message.from, client);
+        normalizedMessage.author = await NormalizeUser(message.from, client);
 
-        client.client.getChat(message.chat.id).then(chat => {
-            normalizedMessage.channel = NormalizeChannel(chat, client);
-            normalizedMessage.server = NormalizeServer(chat, client);
-        });
+        let chat = await client.client.getChat(message.chat.id)
+        normalizedMessage.channel = await NormalizeChannel(chat, client);
+        normalizedMessage.server = await NormalizeServer(chat, client);
     }
 
     if (client.name === "Discord") {
@@ -61,10 +60,12 @@ exports.NormalizeMessage = (message, client) => {
         normalizedMessage.serverId = message.guildId;
         normalizedMessage.id = message.id;
 
-        normalizedMessage.author = NormalizeUser(message.author, client);
-        normalizedMessage.channel = NormalizeChannel(message.channel, client);
-        normalizedMessage.server = NormalizeServer(message.guild, client);
-        normalizedMessage.member = NormalizeMember(message.member, client);
+        normalizedMessage.channel = await NormalizeChannel(message.channel, client);
+        normalizedMessage.server = await NormalizeServer(message.guild, client);
+        normalizedMessage.member = await NormalizeMember(message.member, client);
+
+        let user = await message.author.fetch()
+        normalizedMessage.author = await NormalizeUser(user, client);
     }
 
     if (client.name === "Revolt") {
@@ -78,10 +79,10 @@ exports.NormalizeMessage = (message, client) => {
         normalizedMessage.serverId = message.channel.server._id;
         normalizedMessage.id = message._id;
 
-        normalizedMessage.author = NormalizeUser(message.author, client);
-        normalizedMessage.channel = NormalizeChannel(message.channel, client);
-        normalizedMessage.server = NormalizeServer(message.channel.server, client);
-        normalizedMessage.member = NormalizeMember(message.member, client);
+        normalizedMessage.author = await NormalizeUser(message.author, client);
+        normalizedMessage.channel = await NormalizeChannel(message.channel, client);
+        normalizedMessage.server = await NormalizeServer(message.channel.server, client);
+        normalizedMessage.member = await NormalizeMember(message.member, client);
     }
 
     return normalizedMessage;

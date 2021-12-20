@@ -4,6 +4,8 @@ const TelegramBot = require("node-telegram-bot-api");
 const Discord = require("discord.js");
 const Revolt = require("revolt.js");
 
+const { NormalizeMessage } = require("./util/NormalizeMessage");
+
 /**
  * The main client for interfacing with all other services.
  * @extends {EventEmitter}
@@ -43,7 +45,7 @@ class Client extends EventEmitter {
      * @param {string} [options.discordToken = null] - The token to use to log into Discord
      * @param {string} [options.revoltToken = null] - The token to use to log into Revolt
      */
-    login({
+    async login({
         telegramToken = null,
         discordToken = null,
         revoltToken = null
@@ -68,22 +70,22 @@ class Client extends EventEmitter {
                 polling: true
             });
 
-            this.clients.telegram.client.on("message", (message) => this.handleMessage(message, this.clients.telegram));
-            this.handleReady(this.clients.telegram);
+            this.clients.telegram.client.on("message", async (message) => await this.handleMessage(message, this.clients.telegram));
+            await this.handleReady(this.clients.telegram);
         }
 
         // Discord login
         if (this.tokens.discordToken != null) {
             this.clients.discord.client.login(discordToken);
-            this.clients.discord.client.on("messageCreate", (message) => this.handleMessage(message, this.clients.discord));
-            this.clients.discord.client.on("ready", () => this.handleReady(this.clients.discord));
+            this.clients.discord.client.on("messageCreate", async (message) => await this.handleMessage(message, this.clients.discord));
+            this.clients.discord.client.on("ready", async () => await this.handleReady(this.clients.discord));
         }
 
         // Revolt login
         if (this.tokens.revoltToken != null) {
             this.clients.revolt.client.loginBot(revoltToken);
-            this.clients.revolt.client.on("message", (message) => this.handleMessage(message, this.clients.revolt));
-            this.clients.revolt.client.on("ready", () => this.handleReady(this.clients.revolt));
+            this.clients.revolt.client.on("message", async (message) => await this.handleMessage(message, this.clients.revolt));
+            this.clients.revolt.client.on("ready", async () => await this.handleReady(this.clients.revolt));
         }
     }
 
@@ -92,15 +94,15 @@ class Client extends EventEmitter {
      * @param {Object} message - The message recieved
      * @param {Object} client - The client sending the event 
      */
-    handleMessage(message, client) {
-        this.emit("message", message, client);
+    async handleMessage(message, client) {
+        this.emit("message", await NormalizeMessage(message, client), client);
     }
 
     /**
      * Called when a client is ready
      * @param {Object} client - The client sending the event
      */
-    handleReady(client) {
+    async handleReady(client) {
         this.emit("ready", client);
     }
 }

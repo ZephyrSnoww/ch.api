@@ -6,7 +6,7 @@ const { NormalizeServer } = require("./NormalizeServer");
  * @param {Object} client - The client the given channel is from
  * @returns {Object}
  */
-exports.NormalizeChannel = (channel, client) => {
+exports.NormalizeChannel = async (channel, client) => {
     let normalizedChannel = {
         client: client.client,
         createdAt: new Date(),
@@ -29,7 +29,7 @@ exports.NormalizeChannel = (channel, client) => {
         normalizedChannel.name = channel.title || channel.username;
         normalizedChannel.nsfw = false;
 
-        normalizedChannel.server = NormalizeServer(channel, client);
+        normalizedChannel.server = await NormalizeServer(channel, client);
     }
 
     if (client.name === "Discord") {
@@ -41,7 +41,7 @@ exports.NormalizeChannel = (channel, client) => {
         normalizedChannel.name = channel.name;
         normalizedChannel.nsfw = channel.nsfw;
 
-        normalizedChannel.server = NormalizeServer(channel.guild, client);
+        normalizedChannel.server = await NormalizeServer(channel.guild, client);
     }
 
     if (client.name === "Revolt") {
@@ -53,7 +53,7 @@ exports.NormalizeChannel = (channel, client) => {
         normalizedChannel.name = channel.name;
         normalizedChannel.nsfw = channel.nsfw;
 
-        normalizedChannel.server = NormalizeServer(channel.server, client);
+        normalizedChannel.server = await NormalizeServer(channel.server, client);
     }
 
     return normalizedChannel;
