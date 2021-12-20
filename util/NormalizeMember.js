@@ -18,6 +18,10 @@ exports.NormalizeMember = async (member, client) => {
         originalMember: member
     };
 
+    if (member === null) {
+        return null;
+    }
+
     if (client.name === "Telegram") {
         normalizedMember.avatar = null; // TODO
         normalizedMember.id = member.id;
