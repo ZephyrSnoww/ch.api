@@ -31,6 +31,7 @@ exports.NormalizeMessage = async (message, client) => {
         reply: () => { return null; },
         delete: () => { return null; },
         pin: () => { return null; },
+        unpin: () => { return null; },
 
         originalMessage: message
     };
@@ -57,6 +58,7 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.reply = (content) => client.client.sendMessage(message.chat.id, content, { reply_to_message_id: message.message_id} );
         normalizedMessage.delete = () => client.client.deleteMessage(message.chat.id, message.message_id);
         normalizedMessage.pin = (disableNotification = false) => client.client.pinChatMessage(message.chat.id, message.message_id, disableNotification);
+        normalizedMessage.unpin = () => client.client.unpinChatMessage(message.chat.id, message.message_id);
     }
 
     if (client.name === "Discord") {
@@ -84,6 +86,7 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.reply = (content) => message.reply(content);
         normalizedMessage.delete = () => message.delete();
         normalizedMessage.pin = (disableNotification = null) => message.pin();
+        normalizedMessage.unpin = () => message.unpin();
     }
 
     if (client.name === "Revolt") {
@@ -105,6 +108,7 @@ exports.NormalizeMessage = async (message, client) => {
         normalizedMessage.reply = (content) => message.reply(content);
         normalizedMessage.delete = () => message.delete();
         normalizedMessage.pin = () => { return null };
+        normalizedMessage.unpin = () => { return null };
     }
 
     return normalizedMessage;
