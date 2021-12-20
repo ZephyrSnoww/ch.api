@@ -18,7 +18,7 @@
     };
 
     if (client.name === "Telegram") {
-        normalizedServer.icon = server.photo.big_file_id;
+        normalizedServer.icon = (server.photo === null) ? null : server.photo.big_file_id;
         normalizedServer.banner = null;
         normalizedServer.createdAt = null;
         normalizedServer.description = server.description || server.bio;
