@@ -27,7 +27,7 @@ exports.NormalizeChannel = async (channel, client) => {
 
     if (client.name === "Telegram") {
         normalizedChannel.createdAt = null;
-        normalizedChannel.deletable = null;
+        normalizedChannel.deletable = false;
         normalizedChannel.description = channel.description || channel.bio;
         normalizedChannel.serverId = channel.id;
         normalizedChannel.id = channel.id;
