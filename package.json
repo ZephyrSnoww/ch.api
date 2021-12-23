@@ -1,6 +1,6 @@
 {
   "name": "ch.api.js",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "description": "A chat API meant to interface with as many chat services as possible.",
   "main": "index.js",
   "keywords": [

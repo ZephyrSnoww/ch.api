@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 
-exports.Client = require("./Client");
+exports.Client = require("./client");
 
 exports.NormalizeAttachments = require("./util/NormalizeAttachments");
 exports.NormalizeChannel = require("./util/NormalizeChannel");
