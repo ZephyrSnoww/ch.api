@@ -14,7 +14,7 @@ class Client extends EventEmitter {
     /**
      * @param {Object} options - Options for each client to instantiate
      * @param {string} options.prefix - A prefix for the bot to use
-     * @param {string[]} [options.discordIntents] - Intents for the Discord client to use
+     * @param {string[]} [options.discordIntents] - Intents for the Discord client to use (defaults to all)
      */
     constructor({
         prefix = undefined,
