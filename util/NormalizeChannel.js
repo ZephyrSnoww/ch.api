@@ -6,7 +6,7 @@ const { NormalizeServer } = require("./NormalizeServer");
  * @param {Object} client - The client the given channel is from
  * @returns {Object}
  */
-exports.NormalizeChannel = async (channel, client) => {
+let NormalizeChannel = async (channel, client) => {
     let normalizedChannel = {
         client: client.client,
         createdAt: new Date(),
@@ -75,3 +75,5 @@ exports.NormalizeChannel = async (channel, client) => {
 
     return normalizedChannel;
 }
+
+exports.NormalizeChannel = NormalizeChannel;

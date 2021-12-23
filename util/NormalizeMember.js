@@ -7,7 +7,7 @@ const { NormalizeUser } = require("./NormalizeUser");
  * @param {Object} client - The client the member is from
  * @returns {Object}
  */
-exports.NormalizeMember = async (member, client) => {
+let NormalizeMember = async (member, client) => {
     let normalizedMember = {
         avatar: null,
         client: client.client,
@@ -53,3 +53,5 @@ exports.NormalizeMember = async (member, client) => {
 
     return normalizedMember;
 }
+
+exports.NormalizeMember = NormalizeMember;

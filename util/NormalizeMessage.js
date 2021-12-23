@@ -10,7 +10,7 @@ const { NormalizeServer } = require("./NormalizeServer");
  * @param {Object} client  - The client the message is from
  * @returns {Object}
  */
-exports.NormalizeMessage = async (message, client) => {
+let NormalizeMessage = async (message, client) => {
     let normalizedMessage = {
         attachments: [],
         author: null,
@@ -113,3 +113,5 @@ exports.NormalizeMessage = async (message, client) => {
 
     return normalizedMessage;
 }
+
+exports.NormalizeMessage = NormalizeMessage;
