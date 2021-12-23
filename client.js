@@ -13,14 +13,21 @@ const { NormalizeMessage } = require("./util/NormalizeMessage");
 class Client extends EventEmitter {
     /**
      * @param {Object} options - Options for each client to instantiate
+     * @param {string} options.prefix - A prefix for the bot to use
      * @param {string[]} [options.discordIntents] - Intents for the Discord client to use
      */
     constructor({
+        prefix = undefined,
         discordIntents = Object.values(Discord.Intents.FLAGS)
     }) {
         super();
 
+        if (prefix === undefined) {
+            throw new Error("A bot prefix must be given");
+        }
+
         this.clients = {};
+        this.prefix = prefix;
 
         this.clients.telegram = {
             name: "Telegram",
