@@ -14,10 +14,16 @@ class Client extends EventEmitter {
     /**
      * @param {Object} options - Options for each client to instantiate
      * @param {string} options.prefix - A prefix for the bot to use
+     * @param {string} [options.telegramOwner] - The username of the owner on Telegram
+     * @param {string} [options.discordOwner] - The id of the owner on Discord
+     * @param {string} [options.revoltOwner] - The id of the owner on Revolt
      * @param {string[]} [options.discordIntents] - Intents for the Discord client to use (defaults to all)
      */
     constructor({
         prefix = undefined,
+        telegramOwner = undefined,
+        discordOwner = undefined,
+        revoltOwner = undefined,
         discordIntents = Object.values(Discord.Intents.FLAGS)
     }) {
         super();
@@ -28,6 +34,9 @@ class Client extends EventEmitter {
 
         this.clients = {};
         this.prefix = prefix;
+        this.telegramOwner = telegramOwner;
+        this.discordOwner = discordOwner;
+        this.revoltOwner = revoltOwner;
 
         this.clients.telegram = {
             name: "Telegram",
