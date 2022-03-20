@@ -14,6 +14,9 @@
         discriminator: null,
         id: 0,
         username: null,
+
+        send: () => { return null; },
+
         originalUser: user
     };
 

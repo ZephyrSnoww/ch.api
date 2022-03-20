@@ -15,6 +15,11 @@ let NormalizeMember = async (member, client) => {
         id: 0,
         nickname: null,
         user: null,
+
+        ban: () => { return null; },
+        kick: () => { return null; },
+        setNickname: () => { return null; },
+
         originalMember: member
     };
 
@@ -29,6 +34,8 @@ let NormalizeMember = async (member, client) => {
         normalizedMember.server = null;
 
         normalizedMember.user = await NormalizeUser(member, client);
+
+        normalizedMember.ban = () => client.client.banChatMember(member.)
     }
 
     if (client.name === "Discord") {
@@ -36,9 +43,9 @@ let NormalizeMember = async (member, client) => {
         normalizedMember.id = member.id;
         normalizedMember.nickname = member.nickname;
 
+        let user = await member.user.fetch();
+        
         normalizedMember.server = await NormalizeServer(member.guild, client);
-
-        let user = await member.user.fetch()
         normalizedMember.user = await NormalizeUser(user, client);
     }
 

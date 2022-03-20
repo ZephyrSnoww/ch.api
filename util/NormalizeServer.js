@@ -14,6 +14,13 @@ let NormalizeServer = async (server, client) => {
         id: 0,
         name: null,
         ownerId: 0,
+
+        edit: () => { return null; },
+        leave: () => { return null; },
+        setBanner: () => { return null; },
+        setIcon: () => { return null; },
+        setName: () => { return null; },
+
         originalServer: server
     };
 
